@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -16,6 +17,7 @@ import java.util.List;
 
 class MainTest extends RestAssured{
 
+    public final int TIME_SLEEP = 5000;
     final String getURL = "https://reqres.in/api/users";
     List<String> employeeNameList = new ArrayList<>();
 
@@ -154,56 +156,49 @@ class MainTest extends RestAssured{
         System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
 
         // addEmployee: Click New
-        waitAndClick(driver, "#hcmworkerlistpage_employees_3_HRNew_Worker");
-
-        // addEmployee: Click first_name and input the name
         new WebDriverWait(driver, Duration.ofSeconds(10).getSeconds())
-                .until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[2]/div/div[7]/div[2]/div/div[4]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2]/div/input")));
-        driver.findElement(By.xpath("/html/body/div[2]/div/div[7]/div[2]/div/div[4]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2]/div/input")).sendKeys(first_name);
+                .until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[2]/div/div[6]/div/form[2]/div[2]/div[1]/div[3]/button[1]"))).click();
+
+        Thread.sleep(TIME_SLEEP);
 
         // Click calendar icon to input date
         new WebDriverWait(driver, Duration.ofSeconds(10).getSeconds())
                 .until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[2]/div/div[7]/div[2]/div/div[4]/div[2]/div[1]/div[2]/div[2]/div[2]/div[1]/div/div[2]/div"))).click();
 
-        // As soon as we click the calendar icon a Match Found popup shows up, we have to click cancel here
-        try{
-            driver.findElement(By.xpath("/html/body/div[2]/div/div[7]/div[2]/div/div[4]/div/div[2]/div[2]/button[3]")).click();
-        }catch(Exception e) {
-            ; //Continue with date insertion
+        Thread.sleep(TIME_SLEEP);
+        // Click today
+        new WebDriverWait(driver, Duration.ofSeconds(10).getSeconds())
+                .until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[9]/div[3]/button[2]"))).click();
 
-            // Click date icon again
-            new WebDriverWait(driver, Duration.ofSeconds(10)
-                    .getSeconds()).until(ExpectedConditions.elementToBeClickable(By
-                    .xpath("/html/body/div[2]/div/div[7]/div[2]/div/div[4]/div[2]/div[1]/div[2]/div[2]/div[2]/div[1]/div/div[2]/div")))
-                    .click();
+        Thread.sleep(TIME_SLEEP);
+        // addEmployee: Click first_name and input the name
+        new WebDriverWait(driver, Duration.ofSeconds(10).getSeconds())
+                .until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[2]/div/div[7]/div[2]/div/div[4]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2]/div/input"))).click();
+        Thread.sleep(TIME_SLEEP);
+        driver.findElement(By.xpath("/html/body/div[2]/div/div[7]/div[2]/div/div[4]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2]/div/input"))
+                .sendKeys(first_name);
 
-            // Select today
-            new WebDriverWait(driver, Duration.ofSeconds(10)
-                    .getSeconds()).until(ExpectedConditions.elementToBeClickable(By
-                    .xpath("/html/body/div[9]/div[3]/button[2]")))
+        Thread.sleep(TIME_SLEEP);
+
+        // Click middle name so Hire button becomes active
+        new WebDriverWait(driver, Duration.ofSeconds(10).getSeconds())
+                .until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[2]/div/div[7]/div[2]/div/div[4]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/div/input"))).click();
+
+        Thread.sleep(TIME_SLEEP);
+
+        // Finally click Hire
+        new WebDriverWait(driver, Duration.ofSeconds(10).getSeconds())
+                .until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[2]/div/div[7]/div[2]/div/div[4]/div[2]/div[2]/div[2]/button[1]"))).click();
+
+        Thread.sleep(TIME_SLEEP);
+
+        // Click cancel after hire is clicked
+
+        List<WebElement> cancelElement = driver.findElements(By.xpath("/html/body/div[2]/div/div[8]/div[2]/div/div[4]/div[2]/div[2]/div[2]/button[2]"));
+        if(cancelElement.size() > 0){
+            new WebDriverWait(driver, Duration.ofSeconds(10).getSeconds())
+                    .until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[2]/div/div[8]/div[2]/div/div[4]/div[2]/div[2]/div[2]/button[2]")))
                     .click();
         }
-
-
-        Thread.sleep(5000);
-        try{
-            driver.findElement(By.xpath("/html/body/div[2]/div/div[7]/div[2]/div/div[4]/div/div[2]/div[2]/button[3]")).click();
-        }finally {
-            ;
-        }
-
-        new WebDriverWait(driver, Duration.ofSeconds(10)
-                .getSeconds()).until(ExpectedConditions.elementToBeClickable(By
-                .xpath("/html/body/div[2]/div/div[7]/div[2]/div/div[4]/div[2]/div[1]/div[2]/div[2]/div[2]/div[1]/div/div[2]/div")))
-                .click();
-
-        // Select today
-        new WebDriverWait(driver, Duration.ofSeconds(10)
-                .getSeconds()).until(ExpectedConditions.elementToBeClickable(By
-                .xpath("/html/body/div[9]/div[3]/button[2]")))
-                .click();
-
-        // Finally click hire
-        waitAndClick(driver, "#HcmWorkerNewWorker_4_OkNoRedirect_label");
     }
 }
