@@ -86,11 +86,9 @@ class NalogaTest extends RestAssured{
 
     // After login is complete navigate to employees screen
     private void navigateToEmployees(WebDriver driver) {
-
         try{
-            waitAndFindCSS(driver, "#DefaultDashboard_2_CompanyLogoTop > span > img");
-
             // navigateToEmployees: Open siderbar with shortcut combo: ALT + F1
+            waitAndFindCSS(driver, "#DefaultDashboard_2_CompanyLogoTop > span > img");
             waitAndSendKeys(driver, "body", Keys.chord(Keys.ALT, Keys.F1));
 
             // navigateToEmployees: Click modules - Weird interaction on this element, do not resize screen
