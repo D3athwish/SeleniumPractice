@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-class MainTest extends RestAssured{
-    // Sleep has to be extended to 5 seconds - Employee forms are ignoring await...
+class NalogaTest extends RestAssured{
+    // Some elements seem to ignore my WebDriverWait method, using Thread.sleep instead
     public final int TIME_SLEEP = 10000;
     List<String> employeeNameList = new ArrayList<>();
 
@@ -150,8 +150,10 @@ class MainTest extends RestAssured{
 
         Thread.sleep(10000);
 
-        // The idea here is to check if a cancel button is present, if it is we use the ESC key to close the menu
-        // Having issues with detecting this...
+        // TODO:
+        //  The idea here is to check if a cancel button is present, if it is we use the ESC key to close the menu
+        //  Hmm... having issues with sending ESC input here...
+        //  I also tried clicking the cancel button, but selenium won't let me...
         List<WebElement> cancelElement = driver
                 .findElements(By.xpath("/html/body/div[2]/div/div[7]/div[2]/div/div[4]/div/div[2]/div[2]/button[3]"));
         if(cancelElement.size() > 0){
@@ -168,6 +170,7 @@ class MainTest extends RestAssured{
     }
 
     // Adding Thread.sleep here, WebDriverWait doesn't seem to work consistently on Employee Forms :/
+    // Thread.sleep isn't exactly ok, because we want our tests to go through as fast as possible...
     public WebElement waitAndFindXPath(WebDriver driver, String XPath) throws InterruptedException {
         new WebDriverWait(driver, Duration.ofSeconds(10).getSeconds())
                 .until(ExpectedConditions.elementToBeClickable(By.xpath(XPath)));
