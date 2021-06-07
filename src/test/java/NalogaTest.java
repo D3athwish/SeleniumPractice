@@ -44,62 +44,72 @@ class NalogaTest extends RestAssured{
     public void chromeDriverStart() throws Exception{
         System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
         WebDriver driver = new ChromeDriver();
+        try{
+            // Open Microsoft Login page, and wait for login element to be present
+            driver.get("https://trial-7v8nl0.trial.operations.dynamics.com/");
+            waitAndFindCSS(driver, "#i0116")
+                    .click();
 
-        // Open Microsoft Login page, and wait for login element to be present
-        driver.get("https://trial-7v8nl0.trial.operations.dynamics.com/");
-        waitAndFindCSS(driver, "#i0116")
-                .click();
+            // Login: Insert Email
+            waitAndFindCSS(driver, "#i0116")
+                    .sendKeys("ogris@paurus.si");
 
-        // Login: Insert Email
-        waitAndFindCSS(driver, "#i0116")
-                .sendKeys("ogris@paurus.si");
+            // Login: Click next
+            waitAndFindCSS(driver, "#idSIButton9")
+                    .click();
 
-        // Login: Click next
-        waitAndFindCSS(driver, "#idSIButton9")
-                .click();
+            // Login: Insert Password
+            waitAndFindCSS(driver, "#i0118")
+                    .click();
+            waitAndFindCSS(driver, "#i0118")
+                    .sendKeys("8bvFcKRkMgP7Y7W");
 
-        // Login: Insert Password
-        waitAndFindCSS(driver, "#i0118")
-                .click();
-        waitAndFindCSS(driver, "#i0118")
-                .sendKeys("8bvFcKRkMgP7Y7W");
+            // Login: Clicking Sign In
+            waitAndFindCSS(driver,"#idSIButton9")
+                    .click();
 
-        // Login: Clicking Sign In
-        waitAndFindCSS(driver,"#idSIButton9")
-                .click();
+            // Login: Clicking skip for now - having issues with using selector method so using xpath
+            waitAndFindXPath(driver, "/html/body/div/form[1]/div/div/div[1]/div/div[3]/div/div[2]/div/div[3]/a")
+                    .click();
 
-        // Login: Clicking skip for now - having issues with using selector method so using xpath
-        waitAndFindXPath(driver, "/html/body/div/form[1]/div/div/div[1]/div/div[3]/div/div[2]/div/div[3]/a")
-                .click();
+            // Login: Click Yes - Stay signed in
+            waitAndFindCSS(driver, "#idSIButton9")
+                    .click();
+        }catch(Exception e){
+            e.printStackTrace();
+            Assertions.fail("Chrome Driver start failure");
+        }
 
-        // Login: Click Yes - Stay signed in
-        waitAndFindCSS(driver, "#idSIButton9")
-                .click();
 
         navigateToEmployees(driver);
     }
 
     // After login is complete navigate to employees screen
     private void navigateToEmployees(WebDriver driver) {
-        waitAndFindCSS(driver, "#DefaultDashboard_2_CompanyLogoTop > span > img");
 
-        // navigateToEmployees: Open siderbar with shortcut combo: ALT + F1
-        waitAndSendKeys(driver, "body", Keys.chord(Keys.ALT, Keys.F1));
+        try{
+            waitAndFindCSS(driver, "#DefaultDashboard_2_CompanyLogoTop > span > img");
 
-        // navigateToEmployees: Click modules - Weird interaction on this element, do not resize screen
-        waitAndFindCSS(driver, "#navPaneModuleID")
-                .click();
+            // navigateToEmployees: Open siderbar with shortcut combo: ALT + F1
+            waitAndSendKeys(driver, "body", Keys.chord(Keys.ALT, Keys.F1));
 
-        // navgiateToEmployees: Clicking Human Resources
-        waitAndFindCSS(driver, "#mainPane > div.modulesPane > div > div.gutterList.showFullGutter" +
-                " > div.modulesList.modulesExpanded > a:nth-child(20)")
-                .click();
+            // navigateToEmployees: Click modules - Weird interaction on this element, do not resize screen
+            waitAndFindCSS(driver, "#navPaneModuleID")
+                    .click();
 
-        // navigateToEmployees: Clicking Human Resources -> Employees
-        waitAndFindCSS(driver, "#mainPane > div.modulesPane > div > div.modulesPane-flyout.slideInL > div" +
-                " > div.modulesFlyout-container > div:nth-child(9)")
-                .click();
+            // navgiateToEmployees: Clicking Human Resources
+            waitAndFindCSS(driver, "#mainPane > div.modulesPane > div > div.gutterList.showFullGutter" +
+                    " > div.modulesList.modulesExpanded > a:nth-child(20)")
+                    .click();
 
+            // navigateToEmployees: Clicking Human Resources -> Employees
+            waitAndFindCSS(driver, "#mainPane > div.modulesPane > div > div.modulesPane-flyout.slideInL > div" +
+                    " > div.modulesFlyout-container > div:nth-child(9)")
+                    .click();
+        }catch(Exception e){
+            e.printStackTrace();
+            Assertions.fail("Navigate to Employees failed!");
+        }
         insertEmployees(driver);
     }
 
@@ -108,8 +118,8 @@ class NalogaTest extends RestAssured{
             try {
                 addEmployee(driver, name);
             } catch (Exception e) {
-                System.out.println("Employee add error!");
                 e.printStackTrace();
+                Assertions.fail("Employee add error!");
             }
         });
     }
